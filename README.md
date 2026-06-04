@@ -1,48 +1,100 @@
-note : valdasi kelas kosong pada jam tersebut
+# 🏛️ Sistem Informasi Manajemen Perkuliahan
 
-1. START
-2. LOGIN -> email,password
-3. CHECK ROLE -> admin,dosen,mahasiswa
-4. 
-if admin {
-  
-    1. Crud Jadwal
-    2. Crud Matakuliah
-    3. Crud Akun
-    4. Crud Kelas 
-}
+Sistem ini dirancang untuk mengelola penjadwalan kuliah, data akademis, serta memberikan informasi statistik perkuliahan bagi **Admin**, **Dosen**, dan **Mahasiswa**. Sistem ini mengimplementasikan algoritma pengurutan (*Sorting*) dan pencarian (*Searching*) untuk penyajian datanya.
 
-if dosen {
-    1. View Jadwal Mengajar Saya
-       -> Menampilkan list jadwal kuliah yang diampu oleh dosen tersebut.
-       -> Fitur: 
-          - Urutkan Jadwal (Selection Sort / Insertion Sort) berdasarkan jam mulai.
-          - Cari Jadwal (Sequential Search / Binary Search) berdasarkan nama Matakuliah.
-          
-    2. Statistik Mengajar (Spesifikasi e)
-       -> Menampilkan total jam mengajar dosen dalam 1 / bulan (berdasarkan SKS/durasi).
-       -> Menampilkan jumlah kelas yang tersisa/harus diajar pada hari berjalan.
-       
-    3. Lihat Daftar Mahasiswa per Kelas
-       -> Menampilkan daftar mahasiswa yang mengambil kelas/matakuliah yang diampu dosen tersebut (memanfaatkan data "Crud Kelas/Mahasiswa" dari Admin).
-       
-    4. Profil Akun Dosen
-       -> Menampilkan info pribadi (NIM, Nama , Jurusan) dan opsi untuk ubah password.
-}
-if mahasiswa {
-    dashboard :
-    1. View Jadwal Kuliah (Spesifikasi c & d)
-       -> Menampilkan daftar seluruh jadwal kuliah atau jadwal khusus kelasnya.
-       -> Fitur:
-          - Urutkan Kelas (Selection Sort / Insertion Sort) berdasarkan jam mulai paling pagi.
-          - Cari Kelas/Dosen (Sequential Search / Binary Search) berdasarkan nama Matakuliah atau nama Dosen.
+---
 
-    2. Cek Sisa Kuliah Hari Ini (Spesifikasi e)
-       -> Menampilkan statistik jumlah mata kuliah yang tersisa yang harus dihadiri pada hari berjalan.
+## 🧭 Alur Kerja Sistem (Flowchart Logic)
 
-    3. Informasi Ruangan & Kapasitas
-       -> Menampilkan daftar ruangan (misal: Lab 1, Ruang 302) untuk mengecek lokasi kelas dan melihat kapasitas ruangan agar tidak salah tempat.
+1. **START**
+2. **LOGIN** -> Input `email` & `password`.
+3. **CHECK ROLE** -> Sistem memvalidasi hak akses ke salah satu role berikut:
+   
+### 👨‍💼 [IF ROLE = ADMIN]
+* **1. CRUD Jadwal** * Mengelola pembuatan, pembaruan, dan penghapusan jadwal kuliah.
+    * ⚠️ **VALIDASI UTAMA:** Sistem wajib mengecek **validasi ruangan & kelas kosong pada jam tersebut**. Jadwal tidak akan tersimpan jika terjadi bentrok waktu, ruangan, atau kelas di hari yang sama.
+* **2. CRUD Mata Kuliah** * Mengelola daftar mata kuliah, bobot SKS, dan penempatan semester.
+* **3. CRUD Akun** * Mengelola kredensial login (`email`, `password`, `role`, dan `status`) untuk seluruh pengguna.
+* **4. CRUD Kelas** * Mengatur data rombongan belajar (nama kelas, angkatan, kapasitas) beserta plot Dosen Wali.
 
-    4. Lihat Teman Sekelas
-       -> Menampilkan daftar mahasiswa lain yang berada di kelas atau angkatan yang sama (menggunakan data Kelas/Mahasiswa dari Admin).
-}
+### 👨‍🏫 [IF ROLE = DOSEN]
+* **1. View Jadwal Mengajar Saya** * Menampilkan daftar jadwal kuliah yang diampu oleh dosen yang bersangkutan.
+    * **Fitur:**
+        * *Urutkan Jadwal:* Menggunakan **Selection Sort / Insertion Sort** berdasarkan jam mulai kuliah.
+        * *Cari Jadwal:* Menggunakan **Sequential Search / Binary Search** berdasarkan nama Mata Kuliah.
+* **2. Statistik Mengajar** * Menampilkan total jam mengajar dosen dalam 1 bulan (berdasarkan bobot SKS/durasi).
+    * Menampilkan jumlah kelas yang tersisa/harus diajar pada hari berjalan.
+* **3. Lihat Daftar Mahasiswa per Kelas** * Menampilkan daftar mahasiswa yang mengambil kelas/mata kuliah yang diampu oleh dosen tersebut.
+* **4. Profil Akun Dosen** * Menampilkan informasi pribadi (NIDN, Nama, dan Jurusan) serta opsi untuk memperbarui password.
+
+### 👨‍🎓 [IF ROLE = MAHASISWA]
+* **1. View Jadwal Kuliah (Dashboard)** * Menampilkan daftar seluruh jadwal kuliah khusus untuk kelas mahasiswa tersebut.
+    * **Fitur:**
+        * *Urutkan Kelas:* Menggunakan **Selection Sort / Insertion Sort** berdasarkan jam mulai paling pagi.
+        * *Cari Kelas/Dosen:* Menggunakan **Sequential Search / Binary Search** berdasarkan nama Mata Kuliah atau nama Dosen.
+* **2. Cek Sisa Kuliah Hari Ini** * Menampilkan informasi jumlah mata kuliah tersisa yang harus dihadiri pada hari berjalan.
+* **3. Informasi Ruangan & Kapasitas** * Menampilkan daftar ruangan (misal: Lab 1, Ruang 302) untuk mengecek lokasi kelas serta kapasitas ruangan agar tidak salah tempat.
+* **4. Lihat Teman Sekelas** * Menampilkan daftar mahasiswa lain yang berada di dalam satu kelas yang sama.
+
+---
+
+## 📊 Entity-Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    AKUN ||--o| DOSEN : "memiliki"
+    AKUN ||--o| MAHASISWA : "memiliki"
+    DOSEN ||--o{ KELAS : "dosen wali"
+    KELAS ||--o{ MAHASISWA : "berisi"
+    MATAKULIAH ||--o{ JADWAL : "diplot ke"
+    KELAS ||--o{ JADWAL : "dijadwalkan"
+    DOSEN ||--o{ JADWAL : "mengajar"
+
+    AKUN {
+        int id_akun PK
+        string email UK
+        string password
+        enum role "admin, dosen, mahasiswa"
+        enum status "aktif, nonaktif"
+    }
+
+    DOSEN {
+        string nidn PK
+        string nama_dosen
+        string jurusan
+        int id_akun FK
+    }
+
+    KELAS {
+        int id_kelas PK
+        string nama_kelas
+        int angkatan
+        int kapasitas
+        string nidn_dosen_wali FK
+    }
+
+    MAHASISWA {
+        string nim PK
+        string nama_mahasiswa
+        string jurusan
+        int id_kelas FK
+        int id_akun FK
+    }
+
+    MATAKULIAH {
+        string kode_mk PK
+        string nama_mk
+        int sks
+        int semester
+    }
+
+    JADWAL {
+        int id_jadwal PK
+        string kode_mk FK
+        int id_kelas FK
+        string nidn_dosen FK
+        enum hari "Senin, Selasa, Rabu, Kamis, Jumat, Sabtu"
+        time jam_mulai
+        time jam_selesai
+        string ruangan
+    }
