@@ -49,6 +49,7 @@ erDiagram
     MATAKULIAH ||--o{ JADWAL : "diplot ke"
     KELAS ||--o{ JADWAL : "dijadwalkan"
     DOSEN ||--o{ JADWAL : "mengajar"
+    RUANGAN ||--o{ JADWAL : "digunakan di"
 
     AKUN {
         int id_akun PK
@@ -88,13 +89,20 @@ erDiagram
         int semester
     }
 
+    RUANGAN {
+        int id_ruangan PK
+        string nama_ruangan UK
+        int kapasitas_ruangan
+        string lokasi_gedung
+    }
+
     JADWAL {
         int id_jadwal PK
         string kode_mk FK
         int id_kelas FK
         string nidn_dosen FK
+        int id_ruangan FK
         enum hari "Senin, Selasa, Rabu, Kamis, Jumat, Sabtu"
         time jam_mulai
         time jam_selesai
-        string ruangan
     }
